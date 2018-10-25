@@ -91,11 +91,11 @@ a img {
 }
 /* custom Font*/
 @font-face {
-  font-family: "covered_by_your_graceregular";
+  font-family: "Share-TechMono";
   font-weight: normal;
   font-style: normal;
-  src: url("../font/coveredbyyourgrace-webfont.eot");
-  src: url("../font/coveredbyyourgrace-webfont.eot?#iefix") format('embedded-opentype'), url("../font/coveredbyyourgrace-webfont.svg#covered_by_your_graceregular") format('svg'), url("../font/coveredbyyourgrace-webfont.woff") format('woff'), url("../font/coveredbyyourgrace-webfont.ttf") format('truetype');
+  src: url("../font/Share-TechMono.eot");
+  src: url("../font/Share-TechMono.eot?#iefix") format('embedded-opentype'), url("../font/Share-TechMono.svg#Share-TechMono") format('svg'), url("../font/Share-TechMono.woff") format('woff'), url("../font/Share-TechMono.ttf") format('truetype');
 }
 /* icon Font */
 @font-face {
@@ -111,12 +111,6 @@ a img {
   font-style: normal;
   src: url("../font/fontdiao.eot");
   src: url("../font/fontdiao.eot?#iefix") format('embedded-opentype'), url("../font/fontdiao.svg#fontdiao") format('svg'), url("../font/fontdiao.woff") format('woff'), url("../font/fontdiao.ttf") format('truetype');
-}
-@font-face {
-  font-family: "Share-TechMono";
-  font-weight: normal;
-  font-style: normal;
-  src: url("../font/Share-TechMono.ttf");
 }
 /* Public style */
 * {
@@ -398,7 +392,7 @@ body >header {
   width: 100%;
   -webkit-box-shadow: 2px 4px 5px rgba(3,3,3,0.2);
   box-shadow: 2px 4px 5px rgba(3,3,3,0.2);
-  background: url("../") center #2ca6cb;
+  background: url("../img/bg.jpg") center #2c9dfc;
   color: #fff;
   padding: 1em 0 0.8em;
 }
@@ -457,7 +451,7 @@ body >header a {
 }
 #textlogo h1.site-name {
   width: 86%;
-  font-family: "covered_by_your_graceregular";
+  font-family: "Share-TechMono";
   font-size: 200%;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -552,7 +546,7 @@ header nav ul li a {
   }
 }
 header nav ul li a:hover {
-  background: #1b7f9e;
+  background: #0079e6;
   color: #e9cd4c;
 }
 .shownav {
@@ -645,7 +639,7 @@ header nav ul li a:hover {
   }
 }
 #main section.post a:hover {
-  border-left: 0.5em solid #2ca6cb;
+  border-left: 0.5em solid #2c9dfc;
 }
 #main section.post a h1 {
   color: #2ca6cb;
@@ -694,7 +688,7 @@ header nav ul li a:hover {
   text-decoration: none;
 }
 #main article.post-expand .article-more-link a:hover {
-  background: #2ca6cb;
+  background: #2c9dfc;
   color: #fff;
   text-decoration: none;
 }
@@ -714,7 +708,7 @@ header nav ul li a:hover {
   border-left: 0.5em solid #ccc;
 }
 .unexpand .prev:hover {
-  border-left: 0.5em solid #2ca6cb;
+  border-left: 0.5em solid #2c9dfc;
 }
 #page-nav {
   background: #fafafa;
@@ -730,7 +724,7 @@ header nav ul li a:hover {
 }
 #page-nav a:hover {
   background: #ccc;
-  color: #2ca6cb;
+  color: #2c9dfc;
 }
 #page-nav .prev {
   float: left;
@@ -827,7 +821,7 @@ header nav ul li a:hover {
   transition: color 0.5s;
 }
 .archive-title a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
   -o-transition: color 0.5s;
@@ -907,7 +901,7 @@ article header.article-info >h1 {
   word-break: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  border-left: 5px solid #2ca6cb;
+  border-left: 5px solid #2c9dfc;
 }
 @media only screen and (min-width: 1024px) {
   article header.article-info >h1 {
@@ -1022,7 +1016,7 @@ article .article-content abbr {
   border-bottom: 1px dotted;
 }
 article .article-content blockquote {
-  border-left: 0.2em solid #2ca6cb;
+  border-left: 0.2em solid #2c9dfc;
   margin: 0.65em 0 0.65em 1%;
   padding-left: 1%;
   line-height: 1.5;
@@ -1558,7 +1552,7 @@ section.comment {
   transition: color 1s ease-out;
 }
 #toc.toc-aside a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   -webkit-transition: color 0.3s ease-out;
   -moz-transition: color 0.3s ease-out;
   -o-transition: color 0.3s ease-out;
@@ -1566,7 +1560,7 @@ section.comment {
   transition: color 0.3s ease-out;
 }
 .active {
-  color: #2ca6cb !important;
+  color: #2c9dfc !important;
 }
 .openaside {
   display: none;
@@ -1579,7 +1573,7 @@ section.comment {
   color: #fff;
   border: 1px solid #fff;
   border-radius: 5px;
-  background: #2ca6cb;
+  background: #2c9dfc;
   padding: 0.2em 0.55em;
 }
 .openaside a::before {
@@ -1592,7 +1586,7 @@ section.comment {
   display: none;
 }
 .closeaside a {
-  color: #2ca6cb;
+  color: #2c9dfc;
 }
 .closeaside a:hover {
   color: #2ca6cb;
@@ -1634,7 +1628,7 @@ section.comment {
   color: #2ca6cb;
 }
 .asidetitle a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
   -o-transition: color 0.5s;
@@ -1663,7 +1657,7 @@ section.comment {
   padding: 0.5em 5%;
 }
 .categorieslist li a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
 }
 .tagslist {
   margin: 1em 0 0;
@@ -1695,11 +1689,11 @@ section.comment {
   background: #dbdbdb;
 }
 .tagslist ul li a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   background: #e6e6e6;
 }
 .rsspart {
-  background: #2ca6cb;
+  background: #2c9dfc;
   width: 100%;
 }
 @media only screen and (min-width: 768px) {
@@ -1723,7 +1717,7 @@ section.comment {
   text-align: center;
 }
 .rsspart a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   background: #fafafa;
 }
 .rsspart a::before {
@@ -1751,7 +1745,7 @@ section.comment {
   padding: 0.5em;
 }
 .archiveslist li a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   -webkit-transition: color 0.25s;
   -moz-transition: color 0.25s;
   -o-transition: color 0.25s;
@@ -1799,7 +1793,7 @@ section.comment {
   float: left;
 }
 .tagcloudlist .tagcloudlist a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   -webkit-transition: color 0.25s;
   -moz-transition: color 0.25s;
   -o-transition: color 0.25s;
@@ -1833,7 +1827,7 @@ section.comment {
   padding: 0 3%;
 }
 .linkslist ul a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
   -webkit-transition: color 0.25s;
   -moz-transition: color 0.25s;
   -o-transition: color 0.25s;
@@ -1941,7 +1935,7 @@ footer {
   width: 6.875em;
   height: 6.875em;
   margin: 0 auto;
-  background: no-repeat url("../img/author.jpg") left top;
+  background: no-repeat url("../") left top;
   -webkit-background-size: 6.875em 6.875em;
   -moz-background-size: 6.875em 6.875em;
   background-size: 6.875em 6.875em;
@@ -1967,7 +1961,7 @@ footer {
   }
 }
 .info {
-  font-family: "covered_by_your_graceregular";
+  font-family: "Share-TechMono";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 150%;
@@ -2069,7 +2063,7 @@ footer {
 .copyright {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "covered_by_your_graceregular";
+  font-family: "Share-TechMono";
   width: 100%;
   color: #fff;
   text-align: center;
@@ -2232,7 +2226,7 @@ footer {
   font-weight: normal;
 }
 .article-content .gist .gist-file .gist-meta a:hover {
-  color: #2ca6cb;
+  color: #2c9dfc;
 }
 pre .comment,
 pre .title {

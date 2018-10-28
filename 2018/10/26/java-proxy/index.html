@@ -23,7 +23,7 @@
 <meta property="og:image" content="https://zjiecode.github.io/2018/10/26/java-proxy/proxy_1_run.png">
 <meta property="og:image" content="https://zjiecode.github.io/2018/10/26/java-proxy/proxy_2_run.png">
 <meta property="og:image" content="https://zjiecode.github.io/2018/10/26/java-proxy/proxy_3_run.png">
-<meta property="og:updated_time" content="2018-10-28T00:55:05.000Z">
+<meta property="og:updated_time" content="2018-10-28T01:48:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java的静态代理和动态代理">
 <meta name="twitter:description" content="什么是代理什么是代理呢，其实很好理解，就是不直接访问目标，而是通过一个中间层来访问，就好像下面这样： Java的静态代理举个例子，如果我们一些水果，比如：香蕉、苹果等，写成Java代码，大概是下面这个样子：1234567891011121314151617181920212223242526//Fruit.java/** * 水果的接口 */public interface Fruit &amp;#123">
@@ -96,7 +96,7 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是代理"><span class="toc-number">1.</span> <span class="toc-text">什么是代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java的静态代理"><span class="toc-number">2.</span> <span class="toc-text">Java的静态代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java的动态代理"><span class="toc-number">3.</span> <span class="toc-text">Java的动态代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CGLib代理"><span class="toc-number">4.</span> <span class="toc-text">CGLib代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">6.</span> <span class="toc-text">参考资料</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是代理"><span class="toc-number">1.</span> <span class="toc-text">什么是代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java的静态代理"><span class="toc-number">2.</span> <span class="toc-text">Java的静态代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java的动态代理"><span class="toc-number">3.</span> <span class="toc-text">Java的动态代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CGLib代理"><span class="toc-number">4.</span> <span class="toc-text">CGLib代理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#学习源码"><span class="toc-number">6.</span> <span class="toc-text">学习源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">7.</span> <span class="toc-text">参考资料</span></a></li></ol>
 		
 		</div>
 		
@@ -136,6 +136,7 @@
 </li>
 <li>生成代理类是在运行时，有别于<code>javapoet</code>在编译时生成类。</li>
 </ul>
+<h1 id="学习源码"><a href="#学习源码" class="headerlink" title="学习源码"></a>学习源码</h1><p>纸上谈来终觉浅，绝知此事要躬行。<br>文中提到的源代码，你都可以参考：<br><a href="https://github.com/zjiecode/learn-java/tree/feature/java-proxy" target="_blank" rel="noopener">https://github.com/zjiecode/learn-java/tree/feature/java-proxy</a></p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><blockquote>
 <p><a href="https://blog.csdn.net/danchu/article/details/70238002" target="_blank" rel="noopener">https://blog.csdn.net/danchu/article/details/70238002</a><br><a href="https://blog.csdn.net/lovejj1994/article/details/78080124" target="_blank" rel="noopener">https://blog.csdn.net/lovejj1994/article/details/78080124</a><br><a href="https://www.jianshu.com/p/9a61af393e41?from=timeline&amp;isappinstalled=0" target="_blank" rel="noopener">https://www.jianshu.com/p/9a61af393e41?from=timeline&amp;isappinstalled=0</a><br><a href="https://github.com/cglib/cglib/wiki" target="_blank" rel="noopener">https://github.com/cglib/cglib/wiki</a></p>
 </blockquote>

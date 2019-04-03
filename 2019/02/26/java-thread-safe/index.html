@@ -1,0 +1,490 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java中的线程安全和一些常见的保证线程安全的方法 | 星雨晴空</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="zjiecode">
+    
+
+    
+    <meta name="description" content="什么是线程安全并发编程／多线程在讲Java的线程安全之前，首先我们要知道，Java的多线程编程，可以简单的理解为，让程序同时干多件事情，比较经典一点的就是，在UI程序中，一般会有一个主线程来负责渲染UI界面（比如安卓中的main线程），这个线程一般都是一个死循环，不断的渲染界面的同时，也不让程序退出。在这个时候，如果我们想要发送一个网路请求怎嚒办，我们知道一个网络请求，可能会需要几秒乃至十几秒，如">
+<meta name="keywords" content="Java,多线程,线程安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的线程安全和一些常见的保证线程安全的方法">
+<meta property="og:url" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/index.html">
+<meta property="og:site_name" content="星雨晴空">
+<meta property="og:description" content="什么是线程安全并发编程／多线程在讲Java的线程安全之前，首先我们要知道，Java的多线程编程，可以简单的理解为，让程序同时干多件事情，比较经典一点的就是，在UI程序中，一般会有一个主线程来负责渲染UI界面（比如安卓中的main线程），这个线程一般都是一个死循环，不断的渲染界面的同时，也不让程序退出。在这个时候，如果我们想要发送一个网路请求怎嚒办，我们知道一个网络请求，可能会需要几秒乃至十几秒，如">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/run-1.png">
+<meta property="og:image" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/mms.png">
+<meta property="og:image" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/thread-working-memory.png">
+<meta property="og:image" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/run-order.png">
+<meta property="og:image" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/synchronized-use.png">
+<meta property="og:updated_time" content="2019-04-03T02:02:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的线程安全和一些常见的保证线程安全的方法">
+<meta name="twitter:description" content="什么是线程安全并发编程／多线程在讲Java的线程安全之前，首先我们要知道，Java的多线程编程，可以简单的理解为，让程序同时干多件事情，比较经典一点的就是，在UI程序中，一般会有一个主线程来负责渲染UI界面（比如安卓中的main线程），这个线程一般都是一个死循环，不断的渲染界面的同时，也不让程序退出。在这个时候，如果我们想要发送一个网路请求怎嚒办，我们知道一个网络请求，可能会需要几秒乃至十几秒，如">
+<meta name="twitter:image" content="https://zjiecode.github.io/2019/02/26/java-thread-safe/run-1.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="星雨晴空" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="星雨晴空">星雨晴空</a></h1>
+				<h2 class="blog-motto">张杰的随笔技术</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+						<li><a href="/about">关于我</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:zjiecode.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="drafts" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2019/02/26/java-thread-safe/" title="Java中的线程安全和一些常见的保证线程安全的方法" itemprop="url">Java中的线程安全和一些常见的保证线程安全的方法</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="zjiecode" target="_blank" itemprop="author">zjiecode</a>
+		
+  <p class="article-time">
+    <time datetime="2019-02-26T03:50:00.000Z" itemprop="datePublished"> Published 2019-02-26</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是线程安全"><span class="toc-number">1.</span> <span class="toc-text">什么是线程安全</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#并发编程／多线程"><span class="toc-number">1.1.</span> <span class="toc-text">并发编程／多线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程安全"><span class="toc-number">1.2.</span> <span class="toc-text">线程安全</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#什么时候会有线程安全的问题"><span class="toc-number">2.</span> <span class="toc-text">什么时候会有线程安全的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java内存结构"><span class="toc-number">2.1.</span> <span class="toc-text">Java内存结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#程序计数器"><span class="toc-number">2.1.1.</span> <span class="toc-text">程序计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java栈"><span class="toc-number">2.1.2.</span> <span class="toc-text">Java栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#堆-Heap"><span class="toc-number">2.1.3.</span> <span class="toc-text">堆(Heap)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java内存模型"><span class="toc-number">2.2.</span> <span class="toc-text">Java内存模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#存在线程安全问题的场景"><span class="toc-number">2.3.</span> <span class="toc-text">存在线程安全问题的场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实现线程安全的方式"><span class="toc-number">3.</span> <span class="toc-text">实现线程安全的方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#synchronized关键字"><span class="toc-number">3.1.</span> <span class="toc-text">synchronized关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ReentrantLocak（重入锁）"><span class="toc-number">3.2.</span> <span class="toc-text">ReentrantLocak（重入锁）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本用法"><span class="toc-number">3.2.1.</span> <span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lock的公平锁和非公平锁"><span class="toc-number">3.2.2.</span> <span class="toc-text">Lock的公平锁和非公平锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#相关的一些使用方法"><span class="toc-number">3.2.3.</span> <span class="toc-text">相关的一些使用方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#await-signal-方法"><span class="toc-number">3.2.4.</span> <span class="toc-text">await/signal 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tryLock和lock和lockInterruptibly的区别"><span class="toc-number">3.2.5.</span> <span class="toc-text">tryLock和lock和lockInterruptibly的区别</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#学习源码"><span class="toc-number">5.</span> <span class="toc-text">学习源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">6.</span> <span class="toc-text">参考资料</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="什么是线程安全"><a href="#什么是线程安全" class="headerlink" title="什么是线程安全"></a>什么是线程安全</h1><h2 id="并发编程／多线程"><a href="#并发编程／多线程" class="headerlink" title="并发编程／多线程"></a>并发编程／多线程</h2><p>在讲Java的线程安全之前，首先我们要知道，Java的多线程编程，可以简单的理解为，让程序同时干多件事情，比较经典一点的就是，在UI程序中，一般会有一个主线程来负责渲染UI界面（比如安卓中的main线程），这个线程一般都是一个死循环，不断的渲染界面的同时，也不让程序退出。<br>在这个时候，如果我们想要发送一个网路请求怎嚒办，我们知道一个网络请求，可能会需要几秒乃至十几秒，如果我们直接在渲染UI的界面干这个事情，就会卡死线程，就没有办法渲染UI了，具体在安卓程序上的表现就是卡顿或者是ANR（应用程序无响应）</p>
+<p>因此，很多时候，我们就需要使用多线程，让他们同时执行。</p>
+<h2 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h2><p>上面讲到，有的时候，我们需要使用多线程，这就会带来一个新的问题，就是如果2个线程同时访问一个实例、变量的问题。<br>为了说明问题 ，我这里做了一个多线程问题验证的框架。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public abstract class IThreadSafeTest &#123;</span><br><span class="line">    //目标数值</span><br><span class="line">    public static final int END_VALUE = 0xffffff;</span><br><span class="line"></span><br><span class="line">    public abstract void add(); //在这里实现线程安全的加法</span><br><span class="line"></span><br><span class="line">    public abstract boolean verify();//验证成功调用add()次数</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试的时候很简单，实现上面的接口，然后用下面的方法验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public void test(Class&lt;? extends IThreadSafeTest&gt; cls) &#123;//cls 是上面的一个实现类</span><br><span class="line">    IThreadSafeTest iThreadSafeTest = cls.newInstance();</span><br><span class="line">    int threadCount = IThreadSafeTest.END_VALUE / THREAD_NUM;//线程的数量</span><br><span class="line">    Thread[] threads = new Thread[THREAD_NUM];</span><br><span class="line">    for (int i = 0; i &lt; THREAD_NUM; i++) &#123;</span><br><span class="line">        threads[i] = new Thread(new AddRunAble(iThreadSafeTest, threadCount));</span><br><span class="line">        threads[i].start();</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i = 0; i &lt; THREAD_NUM; i++) &#123;</span><br><span class="line">        threads[i].join();</span><br><span class="line">    &#125;</span><br><span class="line">    assert iThreadSafeTest.verify();//判断累加的结果是否正确，如果错误，就表示线程一定不安全，如果正确，大概率是对的，可以多跑几次。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后我们来做一个完全不做线程安全的实现，这里就只贴出add方法了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void add() &#123;</span><br><span class="line">    value = value + 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><img src="/2019/02/26/java-thread-safe/run-1.png" title="线程安全问题"></p>
+<p>因此，我们用到多线程的时候，就有可能有线程安全的问题。本文就主要介绍一下几种处理线程安全的方法。</p>
+<h1 id="什么时候会有线程安全的问题"><a href="#什么时候会有线程安全的问题" class="headerlink" title="什么时候会有线程安全的问题"></a>什么时候会有线程安全的问题</h1><p>在讲线程安全之前，需要简单的介绍一下Java的内存模型。再将内存模型之前，再简单介绍一下内存结构（感觉越扯越远了，但是是为了说明清楚问题）。<br>Java的内存结构，也就是运行时的数据区域，包括：方法区、Java栈、堆、本地方法栈、程序计数器，借用一张图来表达：<br><img src="/2019/02/26/java-thread-safe/mms.png" title="Java内存结构"></p>
+<blockquote>
+<p>图来自博客：<a href="https://www.cnblogs.com/lewis0077/p/5143268.html" target="_blank" rel="noopener">https://www.cnblogs.com/lewis0077/p/5143268.html</a></p>
+</blockquote>
+<h2 id="Java内存结构"><a href="#Java内存结构" class="headerlink" title="Java内存结构"></a>Java内存结构</h2><h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>下面重点说一下和多线程有关的吧，程序计数器，主要保存当前正在执行的程序的内存地址，这个就和我们要说的多线程有关心了，大家都知道，cpu一个时间分片，只能执行一个程序，他的线程同时执行，是在不同线程之间来回切换，切换的时间足够快， 就让我们感觉他们是同时运行的，所以一个线程的执行，并不是线性的，当多个线程交叉执行的时候，中断当前程序，就需要保存当前执行到哪儿了，以及当前线程的一些数据，方便下次再执行的时候，进行恢复。<br>每一个线程都需要一个独立的程序计数器，因为是独立的，所以他们不会相互的影响，是 线程私有 的，所以，这一块也是线程安全的。</p>
+<h3 id="Java栈"><a href="#Java栈" class="headerlink" title="Java栈"></a>Java栈</h3><p>栈和堆，应该是Javaer最熟悉的2块内存了，Java的栈，都是和线程关联在一起的，开一个新线程，就会有一个新的对应的栈，一个栈当中，又包括了多个栈帧，每调用一个方法，就会入栈一个栈帧，记录这一次的方法调用信息，每返回一个栈，就会把最上面的栈帧给出栈了。<br>所以，当我们无限制的在方法里面调用方法（比如：递归），因为栈的空间是有限的，当栈满了一个，再继续调用方法，就会给出：StackOverflowError 错误了。<br>通过上面的描述，我们大概知道了，一个线程就对应一个栈，这样每个线程的栈也是独立的，所以，栈这一块也是线程安全的，不会因为多个线程同时运行而出现线程安全问题。</p>
+<h3 id="堆-Heap"><a href="#堆-Heap" class="headerlink" title="堆(Heap)"></a>堆(Heap)</h3><p>堆是我们所使用的内存中，最大的一块，也是被所有Java线程所共享的，关于堆，说的最多的是GC，我们今天主要要说的不是GC，是线程共享。<br>一旦数据被多个线程共享了，那就存在安全的问题了。但是为啥会有这里共享就会有线程安全问题呢？这就要介绍一下签名提到的Java的内存模型了。</p>
+<h2 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h2><p>Java的内存模型，简单点的理解 ，就是定义了程序中的各个变量的存取规则。但是需要说明一点的是，这里的变量是指能够被线程共享的变量（实例的成员变量、静态变量、数组对象等，不包括方法参数，局部变量）。<br>Java内存模型，规定了变量存储在主内存中(Main memory),但是线程不直接在主内存存取数据，每个线程又自己的工作内存（Working Memory），线程要访问一个变量之前，需要先从主内存拷贝到工作内存，然后再在自己的工作内存里面玩。（这里顺带可以了解一下volatile 关键字），现在只能访问自己工作内存中的数据，不能访问别的线程的工作内存，所以要交换数据，必须通过主内存。大概就是下面这样的：<br><img src="/2019/02/26/java-thread-safe/thread-working-memory.png" title="Java内存模型"></p>
+<blockquote>
+<p>图来自博客：<a href="https://www.cnblogs.com/lewis0077/p/5143268.html" target="_blank" rel="noopener">https://www.cnblogs.com/lewis0077/p/5143268.html</a></p>
+</blockquote>
+<p>这样，线程1要和线程2交换数据，就要这样：</p>
+<ul>
+<li>线程1把工作内存中的数据，刷新到主内存中；</li>
+<li>线程2把主内存中的数据拷贝到线程2的工作内存，线程使用更新以后，再刷新回主内存中。</li>
+</ul>
+<p>这样的话，问题就来了，假如：内存中有个变量是A=1，线程1做-1处理，线程2做+1处理。正确的来说，运算完了以后 ，内存中的变量还是A=1，但是如果遇到下面这样的顺序：</p>
+<ul>
+<li>线程1从主内存读取A=1到线程1的工作内存，做-1运算，A=0；</li>
+<li>线程2从主内存读取A=1到线程1的工作内存，做+1运算，A=2；</li>
+<li>线程1把工作内存中变量A=0，刷新到主内存；</li>
+<li>线程2把工作内存中变量A=2，刷新到主内存；</li>
+</ul>
+<p>搞完了以后，发现本应该是A=1的数据变成了A=2，这个就是多线程的内存共享带来的问题，下面我们 用一个时序图来表示：</p>
+<img src="/2019/02/26/java-thread-safe/run-order.png" title="Java多线程问题内存时序图">
+<h2 id="存在线程安全问题的场景"><a href="#存在线程安全问题的场景" class="headerlink" title="存在线程安全问题的场景"></a>存在线程安全问题的场景</h2><p>前面比较仔细的解释了，为啥会有线程安全问题，怎嚒出现的，我们稍微做一个总结，其实也就是<strong>存在线程共享内存的地方，就有可能出现线程安全问题</strong>，具体的来说，就是：</p>
+<ul>
+<li>多个线程访问同一个实例的成员变量；</li>
+<li>多个线程访问类静态变量；</li>
+<li>多个线程访问数组对象；</li>
+<li>暂时想到的就这个几个，反正就是多个线程访问同一内存的场景。</li>
+</ul>
+<h1 id="实现线程安全的方式"><a href="#实现线程安全的方式" class="headerlink" title="实现线程安全的方式"></a>实现线程安全的方式</h1><p>既然Java多线程并发编程，存在这个问题，那么肯定要有解决办法，这里介绍一下，常见的几种实现线程安全的方式。</p>
+<h2 id="synchronized关键字"><a href="#synchronized关键字" class="headerlink" title="synchronized关键字"></a>synchronized关键字</h2><p>在说明synchronized关键字之前，我们先要理解一个概念：互斥锁，顾名思义，就是相互排斥，同一时间只能有一个访问到目标对象的锁。<br>简单点说 ，用synchronized修饰的代码，同一时间，只能有一个线程能够访问，其他线程必须等到这个线程离开synchronized修饰的代码，才能够再次进入并且访问这里面的代码，当时，synchronized的使用也有很多种方法，这里我简单的这个总结：<br><img src="/2019/02/26/java-thread-safe/synchronized-use.png" title="synchronized的使用场景"></p>
+<blockquote>
+<p>图片来源：<a href="https://www.jianshu.com/p/d53bf830fa09" target="_blank" rel="noopener">https://www.jianshu.com/p/d53bf830fa09</a><br>这一块我都写了相关的实现，使用了开头提到的多线程验证的框架，代码在：</p>
+</blockquote>
+<h2 id="ReentrantLocak（重入锁）"><a href="#ReentrantLocak（重入锁）" class="headerlink" title="ReentrantLocak（重入锁）"></a>ReentrantLocak（重入锁）</h2><p>synchronized虽然可以解决多线程的问题了，但是遇到一些负责的问题，可能就不够用了，比如：</p>
+<ul>
+<li>我们要判断某段代码当前可否访问，不能访问就不妨问了，直接掉过做其他事情；</li>
+<li>比如我们等待锁的时候，设置一个等待的时常，超过一定时间还等不到锁，就放弃；</li>
+<li>写操作加锁，但是读的时候 ，是不需要加锁的等等。<br>遇到上面的这些问题，我们就可以使用ReentrantLocak来解决。<br>他为啥叫重入锁呢？一个线程可以多次获取并且进入。<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3>他的基本使用差不多是这样：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void add() &#123;</span><br><span class="line">    mReentrantLock.lock();//加锁，不让其他线程访问</span><br><span class="line">    value++;</span><br><span class="line">    mReentrantLock.unlock();//释放，其他线程就可以访问了</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>这里需要注意，lock了几次，就需要unlock几次</strong></p>
+<h3 id="Lock的公平锁和非公平锁"><a href="#Lock的公平锁和非公平锁" class="headerlink" title="Lock的公平锁和非公平锁"></a>Lock的公平锁和非公平锁</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Lock lock=new ReentrantLock(true);//公平锁</span><br><span class="line">Lock lock=new ReentrantLock(false);//非公平锁</span><br></pre></td></tr></table></figure>
+<p>公平锁，就是按照线程后去锁的顺序排队，按照顺序来获取锁。非公平锁就是抢占，谁先获取锁，全靠本事，先到不一定先得。</p>
+<h3 id="相关的一些使用方法"><a href="#相关的一些使用方法" class="headerlink" title="相关的一些使用方法"></a>相关的一些使用方法</h3><ul>
+<li>isLock() 是否有任意线程获取到了这个锁。 todo</li>
+<li>getHoldCount() 查询当前线程保持此锁的次数，也就是执行此线程执行lock方法的次数</li>
+<li>getQueueLength（）返回正等待获取此锁的线程估计数，就是调用了lock方法，正在等待的线程数</li>
+<li>hasQueuedThreads()是否有线程等待此锁</li>
+<li>hasQueuedThread(Thread thread)查询给定线程是否等待获取此锁</li>
+<li>isFair() 该锁是否公平锁</li>
+<li>isHeldByCurrentThread() 当前线程是否获取到了锁</li>
+<li>lockInterruptibly（）获取锁，直到获取成功或者线程被中断</li>
+<li>tryLock（）获取锁，获取成功返回true，获取失败立即返回，不会等待</li>
+<li>tryLock(long timeout,TimeUnit unit) 获取锁，获取成功返回true，如果当前锁被占用了，会等timeout。</li>
+</ul>
+<h3 id="await-signal-方法"><a href="#await-signal-方法" class="headerlink" title="await/signal 方法"></a>await/signal 方法</h3><p>当一个线程A获得了A锁，运行中又需要B锁，但是这个时候B锁被线程B占用了，这个时候线程A就只有等待获取B锁成功，才可以继续。<br>那嚒我们想想，如果还有其他的线程需要A锁呢？就会造成一个链式的等待，降低运行效率。<br>首先我们通过锁创建一个Condition<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Condition sCondition = sReentrantLock.newCondition();</span><br></pre></td></tr></table></figure></p>
+<p>所以，我们获取到了一个锁以后，可以主动放弃运行，再等条件运行的时候，把它唤醒。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sReentrantLock.lock();</span><br><span class="line">try &#123;</span><br><span class="line">    sCondition.await();//等待，并且释放获取到的锁</span><br><span class="line">&#125; catch (InterruptedException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line">sReentrantLock.unlock();</span><br></pre></td></tr></table></figure></p>
+<p>上面这样就可以暂停线程，并且释放他获取的A锁，这样我们在其他线程，就可以获取A锁并且继续运行，运行完了以后，通过signal()方法，就可以再次唤醒线程A。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sReentrantLock.lock();</span><br><span class="line">sCondition.signal();//唤醒自线程</span><br><span class="line">sReentrantLock.unlock();//释放主线程的锁，不然，线程A获取不到锁,还是会阻塞</span><br></pre></td></tr></table></figure></p>
+<p>这样有没有觉得非常强大，可以达到资源的最大利用。但是这里需要注意：一个condition对象的signal方法和该对象的await方法是一一对应的。</p>
+<h3 id="tryLock和lock和lockInterruptibly的区别"><a href="#tryLock和lock和lockInterruptibly的区别" class="headerlink" title="tryLock和lock和lockInterruptibly的区别"></a>tryLock和lock和lockInterruptibly的区别</h3><ul>
+<li>lock，就是直接获取锁，获取不到就一直等待</li>
+<li>tryLock，尝试获取锁，无论是否成功，都立即返回，成功返回true，失败返回false。另外，还可以tryLock(long timeout,TimeUnit unit),给一个最大等待时间，获取timeout时间还获取不到锁，就返回false</li>
+<li>lockInterruptibly 如果获取锁的过程中，线程被中断，lock不会抛异常（不中断，会继续运行），lockInterruptibly会抛异常。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><h1 id="学习源码"><a href="#学习源码" class="headerlink" title="学习源码"></a>学习源码</h1><p>纸上谈来终觉浅，绝知此事要躬行。<br>文中提到的源代码，你都可以参考：<br><a href="https://github.com/zjiecode/learn-java/tree/feature/thread-safe" target="_blank" rel="noopener">https://github.com/zjiecode/learn-java/tree/feature/feature/thread-safe</a></p>
+</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><blockquote>
+<p><a href="https://www.cnblogs.com/lewis0077/p/5143268.html" target="_blank" rel="noopener">https://www.cnblogs.com/lewis0077/p/5143268.html</a><br><a href="https://www.cnblogs.com/-new/p/7256297.html" target="_blank" rel="noopener">https://www.cnblogs.com/-new/p/7256297.html</a></p>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java/">Java</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/多线程/">多线程</a><a href="/tags/线程安全/">线程安全</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="https://zjiecode.github.io/2019/02/26/java-thread-safe/" data-title="Java中的线程安全和一些常见的保证线程安全的方法 | 星雨晴空" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2018/10/26/java-proxy/"  title="Java的静态代理和动态代理">
+ <strong>下一篇：</strong><br/> 
+ <span>Java的静态代理和动态代理
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github Card</p>
+<div class="github-card" data-github="zjiecode" data-theme="medium"></div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Java/" title="Java">Java<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/多线程/" title="多线程">多线程<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/代理/" title="代理">代理<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://github.com/zjiecode/" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">Tag Cloud</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/多线程/" style="font-size: 10px;">多线程</a> <a href="/tags/线程安全/" style="font-size: 10px;">线程安全</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 开心的写好每一段代码. <br/>
+			认真的过好每一秒生活.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/zjiecode" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019
+		
+		<a href="/about" target="_blank" title="zjiecode">zjiecode</a>
+		
+		蜀ICP备14025423号-1 
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+  <script type="text/javascript" src="http://tajs.qq.com/stats?sId=66088623" charset="UTF-8"></script>
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+ </html>
